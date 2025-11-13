@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: video-resource-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: video_resource_db
+      MYSQL_USER: video_user
+      MYSQL_PASSWORD: video_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - video-network
+
+  app:
+    build: .
+    container_name: video-resource-app
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: video_user
+      DB_PASSWORD: video_password
+      DB_NAME: video_resource_db
+      NODE_ENV: production
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mysql
+    networks:
+      - video-network
+    volumes:
+      - ./uploads:/app/uploads
+
+  nginx:
+    image: nginx:alpine
+    container_name: video-resource-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - app
+    networks:
+      - video-network
+
+volumes:
+  mysql_data:
+
+networks:
+  video-network:
+    driver: bridge
