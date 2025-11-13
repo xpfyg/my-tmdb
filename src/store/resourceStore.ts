@@ -115,7 +115,7 @@ export const useResourceStore = create<ResourceStore>((set, get) => ({
   fetchRelatedResources: async (id) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await fetch(`${API_BASE_URL}/related/${id}?limit=6`);
+      const response = await fetch(`${API_BASE_URL}/resource/${id}?related=true&limit=6`);
       const data = await response.json();
       
       if (data.code === 200) {

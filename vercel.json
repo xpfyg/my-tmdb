@@ -1,15 +1,6 @@
 {
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/(.*)", "destination": "/" }
-  ],
-  "functions": {
-    "api/**/*.ts": {
-      "runtime": "@vercel/node@3.0.7"
-    }
-  },
   "buildCommand": "pnpm run build",
-  "outputDirectory": "dist",
   "installCommand": "pnpm install",
+  "outputDirectory": "dist",
   "framework": "vite"
 }
